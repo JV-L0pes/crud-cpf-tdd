@@ -79,6 +79,18 @@ docker build -t crud-cpf-tdd .
 docker run --rm -p 3000:3000 crud-cpf-tdd
 ```
 
+Imagem multi-stage (`node:24-alpine`), usuário `node` (não-root) e `HEALTHCHECK` em `/health`.
+
+## CI
+
+`.github/workflows/ci.yml` roda em push na `main` e em pull request:
+
+1. `npm ci`
+2. `npm run format:check` — formatação
+3. `npm run lint` — análise estática
+4. `npm test` — testes unitários e de integração (Node 22 e 24)
+5. `docker build` — imagem
+
 ## Estrutura
 
 ```

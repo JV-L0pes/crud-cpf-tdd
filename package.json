@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "CRUD de pessoas com CPF e idade calculada",
   "scripts": {
-    "test": "node --test test/unit test/integration",
+    "test": "node --test",
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "lint": "eslint .",

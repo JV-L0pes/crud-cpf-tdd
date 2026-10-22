@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cadastro de Pessoas</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Cadastro de Pessoas</h1>
+      <p class="subtitle">CPF, nome e data de nascimento — idade calculada automaticamente.</p>
+    </header>
+
+    <main>
+      <section aria-labelledby="form-title">
+        <h2 id="form-title">Nova pessoa</h2>
+        <form id="person-form" novalidate>
+          <input type="hidden" id="person-id" />
+          <label for="cpf">CPF</label>
+          <input id="cpf" name="cpf" inputmode="numeric" placeholder="000.000.000-00" required />
+          <label for="nome">Nome</label>
+          <input id="nome" name="nome" placeholder="Nome completo" required />
+          <label for="dataNascimento">Data de nascimento</label>
+          <input id="dataNascimento" name="dataNascimento" type="date" required />
+          <div class="actions">
+            <button type="submit" id="submit-button">Cadastrar</button>
+            <button type="button" id="cancel-button" class="ghost" hidden>Cancelar</button>
+          </div>
+          <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section aria-labelledby="list-title">
+        <h2 id="list-title">Pessoas cadastradas</h2>
+        <p class="empty" id="empty-state">Nenhuma pessoa cadastrada.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>CPF</th>
+              <th>Nome</th>
+              <th>Nascimento</th>
+              <th>Idade</th>
+              <th><span class="sr-only">Ações</span></th>
+            </tr>
+          </thead>
+          <tbody id="person-rows"></tbody>
+        </table>
+      </section>
+    </main>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

@@ -4,7 +4,9 @@ const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
 const NAME_MIN_LENGTH = 2;
 
 export function normalizeCpf(value) {
-  return String(value ?? "").replace(/\D/g, "");
+  if (typeof value !== "string" && typeof value !== "number") return "";
+
+  return String(value).replace(/\D/g, "");
 }
 
 export function isValidCpf(value) {

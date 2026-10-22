@@ -86,6 +86,18 @@ describe("POST /api/persons", () => {
 
     assert.equal(response.status, 409);
   });
+
+  it("recusa cpf com tipo inesperado com 400 em json", async () => {
+    const response = await fetch(`${baseUrl}/api/persons`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ ...validPayload, cpf: { toString: null } }),
+    });
+    const body = await response.json();
+
+    assert.equal(response.status, 400);
+    assert.ok(body.campos.cpf);
+  });
 });
 
 describe("GET /api/persons", () => {
@@ -168,6 +180,19 @@ describe("PUT /api/persons/:id", () => {
     });
 
     assert.equal(response.status, 400);
+  });
+
+  it("preserva o registro quando o cpf chega com tipo inesperado", async () => {
+    const created = await createPerson(validPayload);
+    const response = await fetch(`${baseUrl}/api/persons/${created.id}`, {
+      method: "PUT",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ cpf: { toString: null } }),
+    });
+
+    assert.equal(response.status, 400);
+    const stored = await fetch(`${baseUrl}/api/persons/${created.id}`).then((r) => r.json());
+    assert.equal(stored.cpf, created.cpf);
   });
 });
 

@@ -11,9 +11,36 @@ const emptyState = document.querySelector("#empty-state");
 const submitButton = document.querySelector("#submit-button");
 const cancelButton = document.querySelector("#cancel-button");
 
+const fields = { cpf: cpfField, nome: nomeField, dataNascimento: birthField };
+const fieldLabels = { cpf: "CPF", nome: "Nome", dataNascimento: "Data de nascimento" };
+
 function showFeedback(message, isError = false) {
   feedback.textContent = message;
   feedback.classList.toggle("error", isError);
+}
+
+function clearFieldErrors() {
+  for (const field of Object.values(fields)) {
+    field.removeAttribute("aria-invalid");
+    field.removeAttribute("aria-describedby");
+  }
+}
+
+function showApiError(error) {
+  const campos = error.campos ?? {};
+  const messages = Object.entries(campos).map(
+    ([campo, message]) => `${fieldLabels[campo] ?? campo}: ${message}`,
+  );
+
+  showFeedback(messages.length > 0 ? messages.join(" · ") : error.message, true);
+
+  for (const campo of Object.keys(campos)) {
+    const field = fields[campo];
+    if (!field) continue;
+
+    field.setAttribute("aria-invalid", "true");
+    field.setAttribute("aria-describedby", "feedback");
+  }
 }
 
 function formatCpf(cpf) {
@@ -25,13 +52,18 @@ async function request(url, options) {
   if (response.status === 204) return null;
 
   const body = await response.json();
-  if (!response.ok) throw new Error(body.error ?? "Falha na requisição");
+  if (!response.ok) {
+    const error = new Error(body.error ?? "Falha na requisição");
+    error.campos = body.campos;
+    throw error;
+  }
 
   return body;
 }
 
 function resetForm() {
   form.reset();
+  clearFieldErrors();
   idField.value = "";
   submitButton.textContent = "Cadastrar";
   cancelButton.hidden = true;
@@ -106,6 +138,7 @@ async function removePerson(person) {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+  clearFieldErrors();
 
   const payload = {
     cpf: cpfField.value,
@@ -124,7 +157,7 @@ form.addEventListener("submit", async (event) => {
     resetForm();
     await load();
   } catch (error) {
-    showFeedback(error.message, true);
+    showApiError(error);
   }
 });
 

@@ -44,6 +44,12 @@ describe("isValidCpf", () => {
     assert.equal(isValidCpf(""), false);
     assert.equal(isValidCpf("abcdefghijk"), false);
   });
+
+  it("recusa tipos que nao sao texto ou numero em vez de lancar erro", () => {
+    assert.equal(normalizeCpf({ toString: null }), "");
+    assert.equal(isValidCpf({ toString: null }), false);
+    assert.equal(isValidCpf(["52998224725"]), false);
+  });
 });
 
 describe("parseBirthDate", () => {
